@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket Programming in Flask</title>
+</head>
+<body>
+    <h1>Simple Socket Programming in Flask</h1>
+    <input id="sender_name_input" type="text" placeholder="Your Name">
+    <input id="room_input" type="text" placeholder="Room Name">
+    <input id="message_input" type="text" placeholder="Type a message">
+    <button id="join_button">Join Room</button>
+    <button id="leave_button">Leave Room</button>
+    <button id="send_button">Send</button>
+    <div id="message_display"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('response', function(data) {
+            document.querySelector('#message_display').innerHTML += data + '<br>';
+        });
+
+        document.querySelector('#join_button').onclick = function() {
+            var sender_name = document.querySelector('#sender_name_input').value;
+            var room = document.querySelector('#room_input').value;
+            socket.emit('join', { 'room': room });
+        };
+
+        document.querySelector('#leave_button').onclick = function() {
+            var sender_name = document.querySelector('#sender_name_input').value;
+            var room = document.querySelector('#room_input').value;
+            socket.emit('leave', { 'room': room });
+        };
+
+        document.querySelector('#send_button').onclick = function() {
+            var sender_name = document.querySelector('#sender_name_input').value;
+            var room = document.querySelector('#room_input').value;
+            var message = document.querySelector('#message_input').value;
+            socket.emit('message', { 'sender': sender_name, 'room': room, 'message': message });
+            document.querySelector('#message_input').value = '';
+        };
+    </script>
+</body>
+</html>
